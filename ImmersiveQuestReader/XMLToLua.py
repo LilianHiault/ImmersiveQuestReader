@@ -119,12 +119,12 @@ def main():
 
     # ----- Write and read intermediate XML files -----
     # Write the labeled quests XML file
-    # xml_tree.write('ImmersiveQuestReader/quests-en.xml', encoding="utf-8", xml_declaration=True)
+    # xml_tree.write('ImmersiveQuestReader/quests.xml', encoding="utf-8", xml_declaration=True)
     # print("Wrote the labeled english quests XML file.")
     # Repeat for every language
 
     # # Load the labeled XML file
-    # tree = ET.parse('ImmersiveQuestReader/quests-en.xml')
+    # tree = ET.parse('ImmersiveQuestReader/quests.xml')
     # root = tree.getroot()
     # -----
 
@@ -133,6 +133,8 @@ def main():
     # This is essential because LOTRO has a maximum size for Lua tables so we need do divide it into multiple smaller ones.
     # Bonus: it allows a fatser search because we only search quests by name.
     divided_xml_trees = divide_xml_by_quest_name(xml_quests_labeled.getroot())
+
+    lua_tables = ""
 
     # Convert XML trees to Lua tables
     for letter, xml_tree in divided_xml_trees.items():
@@ -143,10 +145,12 @@ def main():
         lua_table_quests_str = f"QUESTS{letter} = " + format_lua_table(quests_dictionary)
         print(f"Formatted the dictionary into a Lua table as a string for letter {letter} in {time.time() - start} seconds.")
 
-        # Write Lua tables to file
-        with open(f'ImmersiveQuestReader/QuestDatabase{letter}.lua', 'w', encoding="utf-8") as file:
-            file.write(lua_table_quests_str)
-        print(f"Wrote the Lua table to the 'QuestDatabase{letter}.lua' file in {time.time() - start} seconds.")
+        lua_tables += lua_table_quests_str
+
+    # Write Lua tables to file
+    with open(f'ImmersiveQuestReader/QuestDatabase.lua', 'w', encoding="utf-8") as file:
+        file.write(lua_tables)
+    print(f"Wrote the Lua table to the 'QuestDatabase.lua' file in {time.time() - start} seconds.")
         
     # lua_table = xml_to_dict(xml_tree.getroot())
     # print("Converted XML to Lua table.")
