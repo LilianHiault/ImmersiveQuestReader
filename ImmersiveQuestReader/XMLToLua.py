@@ -82,21 +82,21 @@ def format_lua_table_list(list, indent):
 
 
 # Function to divide the XML into multiple XML trees based on the level of the quest
-def divide_xml_by_level(root):
-    quests_by_level = {}
+def divide_xml_by_quest_name(root):
+    quests_by_name = {}
     for quest in root.findall('quest'):
-        level = quest.get('level')
-        level_range = int(level) // 10
-        if level_range in quests_by_level:
-            quests_by_level[level_range].append(quest)
+        name = quest.get('name')
+        letter = name[0]
+        if letter in quests_by_name:
+            quests_by_name[letter].append(quest)
         else:
-            quests_by_level[level_range] = [quest]
+            quests_by_name[letter] = [quest]
 
     divided_xml_trees = {}
-    for level_range, quests in quests_by_level.items():
-        divided_xml_trees[level_range] = ET.ElementTree(ET.Element(root.tag))
+    for letter, quests in quests_by_name.items():
+        divided_xml_trees[letter] = ET.ElementTree(ET.Element(root.tag))
         for quest in quests:
-            divided_xml_trees[level_range].getroot().append(quest)
+            divided_xml_trees[letter].getroot().append(quest)
     
     return divided_xml_trees
 
@@ -113,7 +113,7 @@ def main():
     print(f"Extracted key-value pairs from the labels XML file in {time.time() - start} seconds.")
 
     # Replace key strings with their values in the quests XML file
-    xml_tree = replace_key('ImmersiveQuestReader/lotro-data/quests/quests.xml', key_value_dict)
+    xml_quests_labeled = replace_key('ImmersiveQuestReader/lotro-data/quests/quests.xml', key_value_dict)
     print(f"Replaced keys with their values in the english quests XML file in {time.time() - start} seconds.")
 
 
@@ -129,23 +129,24 @@ def main():
     # -----
 
 
-    # Divide the XML into multiple XML trees based on the level of the quest
-    divided_xml_trees = divide_xml_by_level(xml_tree.getroot())
+    # Divide the XML into multiple XML trees based on the first letter of the quest name
+    # This is essential because LOTRO has a maximum size for Lua tables so we need do divide it into multiple smaller ones.
+    # Bonus: it allows a fatser search because we only search quests by name.
+    divided_xml_trees = divide_xml_by_quest_name(xml_quests_labeled.getroot())
 
     # Convert XML trees to Lua tables
-    for level_range, xml_tree in divided_xml_trees.items():
-        lua_table = xml_to_dict(xml_tree.getroot())
-        level_range_str = str(level_range).replace('-', 'm')
-        print(f"Converted XML to Lua table for level range {level_range} in {time.time() - start} seconds.")
+    for letter, xml_tree in divided_xml_trees.items():
+        quests_dictionary = xml_to_dict(xml_tree.getroot())
+        print(f"Converted XML Quests {letter} into a dictionary in {time.time() - start} seconds.")
 
         # Format the Lua table as a string
-        lua_table_quests_str = f"QUESTS{level_range_str} = " + format_lua_table(lua_table)
-        print(f"Formatted the Lua table as a string for level range {level_range} in {time.time() - start} seconds.")
+        lua_table_quests_str = f"QUESTS{letter} = " + format_lua_table(quests_dictionary)
+        print(f"Formatted the dictionary into a Lua table as a string for letter {letter} in {time.time() - start} seconds.")
 
-        # Write Lua table to file
-        with open(f'ImmersiveQuestReader/QuestDatabase{level_range_str}.lua', 'w', encoding="utf-8") as file:
+        # Write Lua tables to file
+        with open(f'ImmersiveQuestReader/QuestDatabase{letter}.lua', 'w', encoding="utf-8") as file:
             file.write(lua_table_quests_str)
-        print(f"Wrote the Lua table to the 'QuestDatabase{level_range_str}.lua' file in {time.time() - start} seconds.")
+        print(f"Wrote the Lua table to the 'QuestDatabase{letter}.lua' file in {time.time() - start} seconds.")
         
     # lua_table = xml_to_dict(xml_tree.getroot())
     # print("Converted XML to Lua table.")
