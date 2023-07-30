@@ -33,15 +33,15 @@ end
 
 
 
-local quest
-quest  = QuestManager:GetQuestFromName("Fate of the Black Rider")
-if quest ~= nil then
-    local questStateText = QuestManager:GetQuestTextFromState(quest, "new")
-    quest = QuestManager:AddQuestStateText(quest, "new", questStateText)
-    QuestWindow:EnqueueQuest(quest)
-else
-    Turbine.Shell.WriteLine("IQR> New quest not found")
-end
+-- local quest
+-- quest  = QuestManager:GetQuestFromName("Fate of the Black Rider")
+-- if quest ~= nil then
+--     local questStateText = QuestManager:GetQuestTextFromState(quest, "new")
+--     quest = QuestManager:AddQuestStateText(quest, "new", questStateText)
+--     QuestWindow:EnqueueQuest(quest)
+-- else
+--     Turbine.Shell.WriteLine("IQR> New quest not found")
+-- end
 
 -- quest  = QuestManager:GetQuestTextFromName("Untangled Webs")
 -- if quest ~= nil then
@@ -52,11 +52,11 @@ end
 -- end
 
 
-quest  = QuestManager:GetQuestFromName("Untangled Webs")
-if quest ~= nil then
-    local questStateText = QuestManager:GetQuestTextFromState(quest, "completed")
-    quest = QuestManager:AddQuestStateText(quest, "completed", questStateText);
-    QuestWindow:EnqueueQuest(quest);
-else
-    Turbine.Shell.WriteLine("IQR> Completed quest not found")
-end
+-- quest  = QuestManager:GetQuestFromName("Untangled Webs")
+-- if quest ~= nil then
+--     local questStateText = QuestManager:GetQuestTextFromState(quest, "completed")
+--     quest = QuestManager:AddQuestStateText(quest, "completed", questStateText);
+--     QuestWindow:EnqueueQuest(quest);
+-- else
+--     Turbine.Shell.WriteLine("IQR> Completed quest not found")
+-- end
