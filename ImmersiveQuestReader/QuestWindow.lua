@@ -9,6 +9,8 @@ QuestWindow = class(Turbine.UI.Lotro.Window);
 function QuestWindow:Constructor()
     Turbine.UI.Lotro.Window.Constructor(self);
 
+    self.DEBUG = false;
+
     local windowWidth = 800;
     local windowHeight = 300;
     local footerHeight = 20;
@@ -33,7 +35,7 @@ function QuestWindow:Constructor()
     self.questInfo:SetParent(self);
     self.questInfo:SetSize(questInfoWidth, windowHeight - topMargin - 2*yMargin - footerHeight);
     self.questInfo:SetPosition(xMargin, topMargin);
-    if DEBUG then self.questInfo:SetBackColor(Turbine.UI.Color(0.74,0.29,0.29,0.11)) end;
+    if self.DEBUG then self.questInfo:SetBackColor(Turbine.UI.Color(0.74,0.29,0.29,0.11)) end;
     self.questInfo:SetVisible(true);
     
     -- Experience
@@ -41,7 +43,7 @@ function QuestWindow:Constructor()
     self.xpLabel:SetParent(self.questInfo);
     self.xpLabel:SetSize(questInfoWidth, self.questInfo:GetHeight()/5);
     self.xpLabel:SetPosition(0, 0);
-    if DEBUG then self.xpLabel:SetBackColor(Turbine.UI.Color(0.74,0.22,0.52,0.56)) end;
+    if self.DEBUG then self.xpLabel:SetBackColor(Turbine.UI.Color(0.74,0.22,0.52,0.56)) end;
     self.xpLabel:SetFont(Turbine.UI.Lotro.Font.TrajanPro16);
     self.xpLabel:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter);
     self.xpLabel:SetForeColor(questInfoFontColor);
@@ -52,7 +54,7 @@ function QuestWindow:Constructor()
     self.rewardsLabel:SetParent(self.questInfo);
     self.rewardsLabel:SetSize(questInfoWidth, self.questInfo:GetHeight()/5);
     self.rewardsLabel:SetPosition(0, self.xpLabel:GetTop() + self.xpLabel:GetHeight());
-    if DEBUG then self.rewardsLabel:SetBackColor(Turbine.UI.Color(0.74,0.56,0.22,0.24)) end;
+    if self.DEBUG then self.rewardsLabel:SetBackColor(Turbine.UI.Color(0.74,0.56,0.22,0.24)) end;
     self.rewardsLabel:SetFont(Turbine.UI.Lotro.Font.TrajanPro16);
     self.rewardsLabel:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter);
     self.rewardsLabel:SetForeColor(questInfoFontColor);
@@ -64,7 +66,7 @@ function QuestWindow:Constructor()
     self.objectsControl:SetParent(self.questInfo);
     self.objectsControl:SetSize(questInfoWidth, self.questInfo:GetHeight()*3/5);
     self.objectsControl:SetPosition(0, self.rewardsLabel:GetTop() + self.rewardsLabel:GetHeight());
-    if DEBUG then self.objectsControl:SetBackColor(Turbine.UI.Color(0.74,0.21,0.27,0.57)) end;
+    if self.DEBUG then self.objectsControl:SetBackColor(Turbine.UI.Color(0.74,0.21,0.27,0.57)) end;
 
 
     -- Object reward label
@@ -76,14 +78,14 @@ function QuestWindow:Constructor()
     self.itemRewardLabel:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleLeft);
     self.itemRewardLabel:SetForeColor(questInfoFontColor);
     self.itemRewardLabel:SetText("Rewards: ");
-    if DEBUG then self.itemRewardLabel:SetBackColor(Turbine.UI.Color(0.74,0.27,0.34,0.12)) end;
+    if self.DEBUG then self.itemRewardLabel:SetBackColor(Turbine.UI.Color(0.74,0.27,0.34,0.12)) end;
 
     -- Object reward control
     self.itemRewardControl = Turbine.UI.Control();
     self.itemRewardControl:SetParent(self.objectsControl);
     self.itemRewardControl:SetSize(questInfoWidth, self.objectsControl:GetHeight()*3/8);
     self.itemRewardControl:SetPosition(0, self.itemRewardLabel:GetTop() + self.itemRewardLabel:GetHeight());
-    if DEBUG then self.itemRewardControl:SetBackColor(Turbine.UI.Color(0.74,0.57,0.21,0.49)) end;
+    if self.DEBUG then self.itemRewardControl:SetBackColor(Turbine.UI.Color(0.74,0.57,0.21,0.49)) end;
     self.itemRewardControl.children = {}; -- List of items
 
 
@@ -96,14 +98,14 @@ function QuestWindow:Constructor()
     self.choiceLabel:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleLeft);
     self.choiceLabel:SetForeColor(questInfoFontColor);
     self.choiceLabel:SetText("Choice: ");
-    if DEBUG then self.choiceLabel:SetBackColor(Turbine.UI.Color(0.74,0.37,0.2,0.2)) end;
+    if self.DEBUG then self.choiceLabel:SetBackColor(Turbine.UI.Color(0.74,0.37,0.2,0.2)) end;
 
     -- Object choice control
     self.itemChoiceControl = Turbine.UI.Control();
     self.itemChoiceControl:SetParent(self.objectsControl);
     self.itemChoiceControl:SetSize(questInfoWidth, self.objectsControl:GetHeight()*3/8);
     self.itemChoiceControl:SetPosition(0, self.choiceLabel:GetTop() + self.choiceLabel:GetHeight());
-    if DEBUG then self.itemChoiceControl:SetBackColor(Turbine.UI.Color(0.74,0.29,0.77,0.63)) end;
+    if self.DEBUG then self.itemChoiceControl:SetBackColor(Turbine.UI.Color(0.74,0.29,0.77,0.63)) end;
     self.itemChoiceControl.children = {}; -- List of items
 
 
@@ -115,7 +117,7 @@ function QuestWindow:Constructor()
     self.questTextLabel:SetPosition(self.questInfo:GetLeft() + self.questInfo:GetWidth() + xMargin, topMargin);
     self.questTextLabel:SetFont(Turbine.UI.Lotro.Font.BookAntiqua24);
     self.questTextLabel:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleLeft);
-    if DEBUG then self.questTextLabel:SetBackColor(Turbine.UI.Color(0.74,0.11,0.17,0.29)) end;
+    if self.DEBUG then self.questTextLabel:SetBackColor(Turbine.UI.Color(0.74,0.11,0.17,0.29)) end;
     self.questTextLabel:SetText("0 - Quest Name (1/1)");
     self.questTextLabel:SetVisible(true);
     
@@ -153,14 +155,14 @@ function QuestWindow:Constructor()
     self.footer:SetParent(self);
     self.footer:SetSize(windowWidth - 2*xMargin, footerHeight);
     self.footer:SetPosition(xMargin, windowHeight - footerHeight - yMargin);
-    if DEBUG then self.footer:SetBackColor(Turbine.UI.Color(0.95,0.05,0,0.05)) end;
+    if self.DEBUG then self.footer:SetBackColor(Turbine.UI.Color(0.95,0.05,0,0.05)) end;
 
     -- Number of pages
     self.pageNumber = Turbine.UI.Label();
     self.pageNumber:SetParent(self.footer);
     self.pageNumber:SetSize(self.footer:GetWidth()/2, footerHeight);
     self.pageNumber:SetPosition(self.footer:GetWidth()/2, 0);
-    if DEBUG then self.pageNumber:SetBackColor(Turbine.UI.Color(0.74,0.11,0.29,0.16)) end;
+    if self.DEBUG then self.pageNumber:SetBackColor(Turbine.UI.Color(0.74,0.11,0.29,0.16)) end;
     self.pageNumber:SetFont(Turbine.UI.Lotro.Font.BookAntiqua18);
     self.pageNumber:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleRight);
     self.pageNumber:SetForeColor(Turbine.UI.Color(1,1,0.5));
@@ -171,7 +173,7 @@ function QuestWindow:Constructor()
     self.npcLabel:SetParent(self.footer);
     self.npcLabel:SetSize(self.footer:GetWidth()/2, footerHeight);
     self.npcLabel:SetPosition(0, 0);
-    if DEBUG then self.npcLabel:SetBackColor(Turbine.UI.Color(0.74,0.32,0.22,0.56)) end;
+    if self.DEBUG then self.npcLabel:SetBackColor(Turbine.UI.Color(0.74,0.32,0.22,0.56)) end;
     self.npcLabel:SetFont(Turbine.UI.Lotro.Font.BookAntiqua18);
     self.npcLabel:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleLeft);
     self.npcLabel:SetForeColor(Turbine.UI.Color(1,1,0.5));
@@ -181,7 +183,8 @@ function QuestWindow:Constructor()
 
 
 
-    -- Hide the window when the UI is hidden    
+    -- Hide the window when the UI is hidden
+    -- Doesn't work properly
     self:SetWantsKeyEvents(true);
     self.KeyDown = function(sender, args)
         if (args.Action == Turbine.UI.Lotro.Action.Escape) then
@@ -193,9 +196,9 @@ function QuestWindow:Constructor()
 
 end
 
-function QuestWindow:EnqueueQuest(quest, state)
-    self.questQueue[#self.questQueue + 1] = {quest, state};
-    if DEBUG then Turbine.Shell.WriteLine("IQR.QuestWindow> Quest " .. quest.name .." added to the queue") end;
+function QuestWindow:EnqueueQuest(quest)
+    self.questQueue[#self.questQueue + 1] = quest;
+    if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestWindow> Quest " .. quest.name .." added to the queue") end;
     
     if not self:IsVisible() then
         self.quest = quest;
@@ -205,19 +208,11 @@ function QuestWindow:EnqueueQuest(quest, state)
 end
 
 function QuestWindow:ShowQuest()
+    local questText = "Quest text";
+    if self.quest ~= nil and self.quest._name ~= nil then
+        questText = self.quest._name;
+    end
 
-    local state = self.questQueue[self.questQueueIndex].state;
-    local questText = "";
-    if state ~= nil and state == "completed" then
-        if DEBUG then Turbine.Shell.WriteLine("IQR> Quest completed") end;
-    else
-        if self.quest.bestower.text ~= nil and type(self.quest.bestower.text) == "string" then
-            questText = self.quest.bestower.text;
-        else
-            questText = self.quest.bestower[1].text;
-        end
-
-    end        
     questText = self:ComputeQuestText(questText);
 
     -- Split the text in a table of lines
@@ -260,7 +255,7 @@ function QuestWindow:UpdateFooterText()
 end
 
 function QuestWindow:UpdateInfo()
-    if DEBUG then Turbine.Shell.WriteLine("IQR.QuestWindow> UpdateInfo " .. self.quest.name) end;
+    if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestWindow> UpdateInfo " .. self.quest.name) end;
     -- XP
     self.xpLabel:SetText(tostring(self.quest.rewards.XP.quantity) .. " XP");
     -- Money
@@ -278,11 +273,11 @@ function QuestWindow:UpdateInfo()
         value:SetVisible(false);
     end
     if self.quest.rewards.object then
-        -- if DEBUG then Turbine.Shell.WriteLine("IQR.QuestWindow> Item Reward") end;
+        -- if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestWindow> Item Reward") end;
         self:AddItemsToControl(self.quest.rewards.object, self.itemRewardControl)
     end;
     if self.quest.rewards.selectOneOf and self.quest.rewards.selectOneOf.object then
-        -- if DEBUG then Turbine.Shell.WriteLine("IQR.QuestWindow> Item Choice Rewards") end;
+        -- if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestWindow> Item Choice Rewards") end;
         self:AddItemsToControl(self.quest.rewards.selectOneOf.object, self.itemChoiceControl) 
     end;
         
@@ -310,7 +305,7 @@ function QuestWindow:AddItemsToControl(items, control)
             itemInfoControl:SetParent(control);
             itemInfoControl:SetPosition(xItem, yItem);
             if item.quantity then 
-                Turbine.Shell.WriteLine("IQR.QuestWindow> Item Quantity");
+                -- Turbine.Shell.WriteLine("IQR.QuestWindow> Set Item Quantity");
                 itemInfoControl:SetQuantity(tonumber(item.quantity)) 
             end
             table.insert(control.children, itemInfoControl);
@@ -324,7 +319,7 @@ function QuestWindow:ShowNextQuestInQueueIfExists()
     if self.questQueueIndex < #self.questQueue then
         -- Display next quest
         self.questQueueIndex = self.questQueueIndex + 1;
-        self.quest = self.questQueue[self.questQueueIndex][1];
+        self.quest = self.questQueue[self.questQueueIndex];
         Turbine.Shell.WriteLine("IQR.QuestWindow> Next quest in queue : " .. self.quest.name);
         self:ShowQuest(); 
     else

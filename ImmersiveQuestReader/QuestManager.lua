@@ -21,6 +21,8 @@ import "EsyIQR.ImmersiveQuestReader.QuestDatabasem1"
 QuestManager = class();
 
 function QuestManager:Constructor()
+    self.DEBUG = true;
+
     if QUESTS then self.questsByLevel = QUESTS.quest end
     self.questsByLevel = { QUESTS1.quest, QUESTS2.quest, QUESTS3.quest, QUESTS4.quest, QUESTS5.quest, QUESTS6.quest, QUESTS7.quest, QUESTS8.quest, QUESTS9.quest, QUESTS10.quest, QUESTS11.quest, QUESTS12.quest, QUESTS13.quest, QUESTS14.quest, QUESTSm1.quest}
 
@@ -28,7 +30,7 @@ end
 
 function QuestManager:IsNewQuest(chatMessage)
     if string.find(chatMessage, "New Quest: ") then
-        if DEBUG then Turbine.Shell.WriteLine("IQR.QuestManager> New quest found") end
+        if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestManager> New quest found") end
         return true
     else
         return false
@@ -52,15 +54,61 @@ function QuestManager:GetNameFromChatMessageCompletedQuest(chatMessage)
 end
 
 -- Returns the quest text for a given quest name
-function QuestManager:GetQuestTextFromName(questName)
+function QuestManager:GetQuestFromName(questName)
     for _, database in pairs(self.questsByLevel) do
         for _, quest in pairs(database) do
             -- if quest.name then Turbine.Shell.WriteLine("IQR.QuestManager> Quest searched: '" .. quest.name .. "'") end
             if quest.name == questName then
-                if DEBUG then Turbine.Shell.WriteLine("IQR.QuestManager> Quest found: '" .. quest.name .. "'") end
+                if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestManager> Quest found: '" .. quest.name .. "'") end
                 return quest -- Retourne la quête si le nom correspond
             end
         end
     end
     return nil -- Retourne nil si la quête n'est pas trouvée
+end
+
+function QuestManager:AddQuestState(quest, state)
+    if state == "new" or state == "completed" then
+        quest._state = state
+    else
+        quest._state = nil
+    end
+end
+
+function QuestManager:QuestTextFromQuestState(quest)
+    
+
+    local state = "new" -- Default state to new
+    if quest._state then state = quest._state end -- If state is set, use it
+
+    local questText = "";
+    if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestManager> Showing quest " .. quest.name .. " (" .. state .. ")") end;
+
+    if state ~= nil and state == "completed" then
+        local objectives = quest.objectives;
+        if objectives.objective.dialog then
+            questText = objectives.objective.dialog.text;
+        elseif objectives.objective[#objectives.objective].dialog.text then
+            questText = objectives.objective[#objectives.objective].dialog.text;
+        elseif objectives.objective[#objectives.objective].dialog[#objectives.objective[#objectives.objective].dialog] then
+            questText = objectives.objective[#objectives.objective].dialog[#objectives.objective[#objectives.objective].dialog].text;
+        else
+            questText = "Could not retrieve quest text";
+            if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestWindow> Can't find quest text") end;
+        end
+
+    elseif state ~= nil and state == "new" then
+        if quest.bestower.text ~= nil and type(quest.bestower.text) == "string" then
+            questText = quest.bestower.text;
+        else
+            questText = quest.bestower[1].text;
+        end
+    else
+        if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestWindow> Quest state is " .. state) end;
+        questText = "Could not retrieve quest text";
+    end
+   
+    if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestManager> Quest text: " .. questText) end
+    quest._text = questText;
+    return questText;
 end

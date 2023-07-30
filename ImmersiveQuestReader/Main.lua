@@ -2,9 +2,9 @@ import "Turbine";
 import "EsyIQR.ImmersiveQuestReader.QuestWindow"
 import "EsyIQR.ImmersiveQuestReader.QuestManager"
 
-DEBUG = false
+local DEBUG_GLOBAL = false
 
-if DEBUG then Turbine.Shell.WriteLine("\nIQR> Starting Immersive Quest Reader...") end
+if DEBUG_GLOBAL then Turbine.Shell.WriteLine("\nIQR> Starting Immersive Quest Reader...") end
 
 QuestWindow = QuestWindow()
 QuestManager = QuestManager()
@@ -13,30 +13,50 @@ QuestManager = QuestManager()
 -- Callback when a message is received
 Turbine.Chat.Received = function (sender, args)
     if args.ChatType == Turbine.ChatType.Quest then
+
+        -- New quest
         if QuestManager:IsNewQuest(args.Message) then
             local questName = QuestManager:GetNameFromChatMessageNewQuest(args.Message)
-            local quest = QuestManager:GetQuestTextFromName(questName)
+            local quest = QuestManager:GetQuestFromName(questName)
             if quest ~= nil then
-                QuestWindow:EnqueueQuest(quest, "new")
+                QuestManager:AddQuestState(quest, "new");
+                QuestWindow:EnqueueQuest(quest);
             end
+
+        -- Completed quest
         elseif QuestManager:IsCompletedQuest(args.Message) then
-            if DEBUG then Turbine.Shell.WriteLine("IQR> Completed " .. QuestManager:GetNameFromChatMessageCompletedQuest(args.Message)) end
+            if DEBUG_GLOBAL then Turbine.Shell.WriteLine("IQR> Completed " .. QuestManager:GetNameFromChatMessageCompletedQuest(args.Message)) end
         end
+
     end
 end
 
 
 
--- local quest  = QuestManager:GetQuestTextFromName("Fate of the Black Rider")
--- if quest ~= nil then
---     QuestWindow:EnqueueQuest(quest, "new")
--- else
---     Turbine.Shell.WriteLine("IQR> Quest not found")
--- end
+local quest
+quest  = QuestManager:GetQuestFromName("Fate of the Black Rider")
+if quest ~= nil then
+    QuestManager:AddQuestState(quest, "new")
+    QuestManager:QuestTextFromQuestState(quest)
+    QuestWindow:EnqueueQuest(quest)
+else
+    Turbine.Shell.WriteLine("IQR> New quest not found")
+end
 
 -- quest  = QuestManager:GetQuestTextFromName("Untangled Webs")
 -- if quest ~= nil then
---     QuestWindow:EnqueueQuest(quest, "new")
+--     QuestManager:AddQuestState(quest, "new")
+--     QuestWindow:EnqueueQuest(quest)
 -- else
---     Turbine.Shell.WriteLine("IQR> Quest not found")
+--     Turbine.Shell.WriteLine("IQR> New quest not found")
 -- end
+
+
+quest  = QuestManager:GetQuestFromName("Untangled Webs")
+if quest ~= nil then
+    QuestManager:AddQuestState(quest, "completed");
+    QuestManager:QuestTextFromQuestState(quest);
+    QuestWindow:EnqueueQuest(quest);
+else
+    Turbine.Shell.WriteLine("IQR> Completed quest not found")
+end
