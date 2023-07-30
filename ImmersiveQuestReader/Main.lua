@@ -19,7 +19,7 @@ Turbine.Chat.Received = function (sender, args)
             local questName = QuestManager:GetNameFromChatMessageNewQuest(args.Message)
             local quest = QuestManager:GetQuestFromName(questName)
             if quest ~= nil then
-                QuestManager:AddQuestState(quest, "new");
+                QuestManager:AddQuestStateText(quest, "new");
                 QuestWindow:EnqueueQuest(quest);
             end
 
@@ -36,8 +36,8 @@ end
 local quest
 quest  = QuestManager:GetQuestFromName("Fate of the Black Rider")
 if quest ~= nil then
-    QuestManager:AddQuestState(quest, "new")
-    QuestManager:QuestTextFromQuestState(quest)
+    local questStateText = QuestManager:GetQuestTextFromState(quest, "new")
+    quest = QuestManager:AddQuestStateText(quest, "new", questStateText)
     QuestWindow:EnqueueQuest(quest)
 else
     Turbine.Shell.WriteLine("IQR> New quest not found")
@@ -54,8 +54,8 @@ end
 
 quest  = QuestManager:GetQuestFromName("Untangled Webs")
 if quest ~= nil then
-    QuestManager:AddQuestState(quest, "completed");
-    QuestManager:QuestTextFromQuestState(quest);
+    local questStateText = QuestManager:GetQuestTextFromState(quest, "completed")
+    quest = QuestManager:AddQuestStateText(quest, "completed", questStateText);
     QuestWindow:EnqueueQuest(quest);
 else
     Turbine.Shell.WriteLine("IQR> Completed quest not found")

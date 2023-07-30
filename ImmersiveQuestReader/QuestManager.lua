@@ -21,7 +21,7 @@ import "EsyIQR.ImmersiveQuestReader.QuestDatabasem1"
 QuestManager = class();
 
 function QuestManager:Constructor()
-    self.DEBUG = true;
+    self.DEBUG = false;
 
     if QUESTS then self.questsByLevel = QUESTS.quest end
     self.questsByLevel = { QUESTS1.quest, QUESTS2.quest, QUESTS3.quest, QUESTS4.quest, QUESTS5.quest, QUESTS6.quest, QUESTS7.quest, QUESTS8.quest, QUESTS9.quest, QUESTS10.quest, QUESTS11.quest, QUESTS12.quest, QUESTS13.quest, QUESTS14.quest, QUESTSm1.quest}
@@ -67,20 +67,22 @@ function QuestManager:GetQuestFromName(questName)
     return nil -- Retourne nil si la quête n'est pas trouvée
 end
 
-function QuestManager:AddQuestState(quest, state)
+function QuestManager:AddQuestStateText(quest, state, questText)
     if state == "new" or state == "completed" then
         quest._state = state
     else
         quest._state = nil
     end
+
+    local questText = "Quest text not found";
+    if questText then
+        quest._text = questText;
+    end
+
+    return quest;
 end
 
-function QuestManager:QuestTextFromQuestState(quest)
-    
-
-    local state = "new" -- Default state to new
-    if quest._state then state = quest._state end -- If state is set, use it
-
+function QuestManager:GetQuestTextFromState(quest, state)
     local questText = "";
     if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestManager> Showing quest " .. quest.name .. " (" .. state .. ")") end;
 
@@ -109,6 +111,5 @@ function QuestManager:QuestTextFromQuestState(quest)
     end
    
     if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestManager> Quest text: " .. questText) end
-    quest._text = questText;
     return questText;
 end
