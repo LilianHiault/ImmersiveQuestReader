@@ -251,7 +251,11 @@ end
 
 function QuestWindow:UpdateFooterText()
     self.pageNumber:SetText(self.quest.name .. " - " .. self.currentPage .. "/" .. #self.questPages);
-    self.npcLabel:SetText("From " .. self.quest.bestower.npcName);
+    if self.quest.bestower then
+        self.npcLabel:SetText("From " .. self.quest.bestower.npcName);
+    else
+        self.npcLabel:SetText("");
+    end
 end
 
 function QuestWindow:UpdateInfo()
