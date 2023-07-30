@@ -67,6 +67,10 @@ function QuestManager:GetQuestFromName(questName)
     return nil -- Retourne nil si la quête n'est pas trouvée
 end
 
+-- Add the quest text and state to the quest as _text and _state
+-- @param quest: a quest table
+-- @param state: "new" or "completed"
+-- @param questText: the quest text
 function QuestManager:AddQuestStateText(quest, state, questText)
     if state == "new" or state == "completed" then
         quest._state = state
@@ -74,7 +78,6 @@ function QuestManager:AddQuestStateText(quest, state, questText)
         quest._state = nil
     end
 
-    local questText = "Quest text not found";
     if questText then
         quest._text = questText;
     end

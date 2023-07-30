@@ -209,8 +209,8 @@ end
 
 function QuestWindow:ShowQuest()
     local questText = "Quest text";
-    if self.quest ~= nil and self.quest._name ~= nil then
-        questText = self.quest._name;
+    if self.quest ~= nil and self.quest._text ~= nil then
+        questText = self.quest._text;
     end
 
     questText = self:ComputeQuestText(questText);
