@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import time
+import string # To iterate from A to Z
 
 # Function to extract key-value pairs from the labels xml
 def extract_key_value_pairs(xml_file):
@@ -51,32 +52,35 @@ def xml_to_dictionary(element):
     return dictionary
 
 # Function to format Lua table as string
-def format_lua_table(table, indent=0):
-    formatted = "{\n"
+def format_lua_table(table, indent=0, beautiful = False):
+    formatted = "{\n" if beautiful else "{"
     for key, value in table.items():
-        formatted += "\t" * (indent + 1)
+        # if beautiful:
+        #     formatted += "\t" * (indent + 1)
         if isinstance(value, dict):
-            formatted += f"{key} = {format_lua_table(value, indent + 1)}"
+            formatted += f"{key} = {format_lua_table(value, indent + 1, beautiful)}"
         elif isinstance(value, list):
-            formatted += f"{key} = {format_lua_table_list(value, indent + 1)}"
+            formatted += f"{key} = {format_lua_table_list(value, indent + 1, beautiful)}"
         else:
             formatted += f"{key} = {repr(value)}"
-        formatted += ",\n"
-    formatted += "\t" * indent + "}"
+        formatted += ",\n" if beautiful else ","
+    # formatted += "\t" * indent + "}" # for better readability
+    formatted += "}"
 
     return formatted
 
 # Function to format Lua table lists as string
-def format_lua_table_list(list, indent):
-    formatted = "{\n"
+def format_lua_table_list(list, indent, beautiful):
+    formatted = "{\n" if beautiful else "{"
     for item in list:
-        formatted += "\t" * (indent + 1)
+        # formatted += "\t" * (indent + 1) # Indentation for readability
         if isinstance(item, dict):
             formatted += format_lua_table(item, indent + 1)
         else:
             formatted += repr(item)
-        formatted += ",\n"
-    formatted += "\t" * indent + "}"
+        formatted += ",\n" if beautiful else ","
+    # formatted += "\t" * indent + "}" # Indentation for readability
+    formatted += "}"
 
     return formatted
 
@@ -84,7 +88,13 @@ def format_lua_table_list(list, indent):
 # Function to divide the XML into multiple XML trees based on the first letter of the quest name
 # Returns a dictionary with dict[LETTER] -> XML tree
 def divide_xml_by_quest_name_first_letter(root):
+    # Initialise the dictionary
     quests_by_first_letter = {}
+    for letter in string.ascii_uppercase:
+        quests_by_first_letter[letter] = []
+    quests_by_first_letter["OTHER"] = []
+    
+    # Insert quests in the dictionary based on their first letter
     for quest in root.findall('quest'):
         name = quest.get('name')
         letter = name[0].upper()
@@ -95,7 +105,7 @@ def divide_xml_by_quest_name_first_letter(root):
             # Insert the new quest in the dictionary
             quests_by_first_letter[letter].append(quest)
         else:
-            # Create the dictionary if it doesn't exist
+            # Create a list of quests with the first quest if it doesn't exist
             quests_by_first_letter[letter] = [quest]
 
     divided_xml_trees = {}
@@ -148,7 +158,7 @@ def main():
         print(f"✅ Converted XML Quests {letter} into a dictionary in {(time.time() - start):.2f} seconds.")
 
         # Format the Lua table as a string
-        lua_table_quests_str = f"QUESTS{letter} = " + format_lua_table(quests_dictionary)
+        lua_table_quests_str = f"QUESTS_{letter} = " + format_lua_table(quests_dictionary, beautiful=True)
         print(f"✅ Formatted the dictionary into a Lua table as a string for letter {letter} in {(time.time() - start):.2f} seconds.")
 
         lua_tables += lua_table_quests_str
