@@ -25,20 +25,20 @@ def replace_key(xml_file, key_value_dict):
     return tree
 
 
-# Function to convert XML element to Lua table
-def xml_to_dict(element):
+# Function to convert XML element to a dictionary
+def xml_to_dictionary(element):
     dictionary = {}
     for child in element:
         if child.tag in dictionary:
             # If the item is already in the dictionary, it must be a list
             if type(dictionary[child.tag]) is list:
                 # Append the new item to the list
-                dictionary[child.tag].append(xml_to_dict(child))
+                dictionary[child.tag].append(xml_to_dictionary(child))
             else:
                 # Create the list if it doesn't exist
-                dictionary[child.tag] = [dictionary[child.tag], xml_to_dict(child)]
+                dictionary[child.tag] = [dictionary[child.tag], xml_to_dictionary(child)]
         else:
-            dictionary[child.tag] = xml_to_dict(child)
+            dictionary[child.tag] = xml_to_dictionary(child)
 
     if len(element.attrib) > 0:
         # Add attributes to the dictionary
@@ -138,7 +138,7 @@ def main():
 
     # Convert XML trees to Lua tables
     for letter, xml_tree in divided_xml_trees.items():
-        quests_dictionary = xml_to_dict(xml_tree.getroot())
+        quests_dictionary = xml_to_dictionary(xml_tree.getroot())
         print(f"Converted XML Quests {letter} into a dictionary in {time.time() - start} seconds.")
 
         # Format the Lua table as a string
