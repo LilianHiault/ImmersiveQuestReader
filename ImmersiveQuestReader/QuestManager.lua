@@ -1,31 +1,43 @@
 -- Quest Manager
 
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase0"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase1"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase2"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase3"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase4"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase5"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase6"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase7"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase8"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase9"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase10"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase11"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase12"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase13"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabase14"
-import "EsyIQR.ImmersiveQuestReader.QuestDatabasem1"
+import "EsyIQR.ImmersiveQuestReader.QuestDatabase"
 
 
 QuestManager = class();
 
 function QuestManager:Constructor()
     self.DEBUG = false;
-
-    if QUESTS then self.questsByLevel = QUESTS.quest end
-    self.questsByLevel = { QUESTS1.quest, QUESTS2.quest, QUESTS3.quest, QUESTS4.quest, QUESTS5.quest, QUESTS6.quest, QUESTS7.quest, QUESTS8.quest, QUESTS9.quest, QUESTS10.quest, QUESTS11.quest, QUESTS12.quest, QUESTS13.quest, QUESTS14.quest, QUESTSm1.quest}
-
+    
+    -- if QUESTS then self.questsByLevel = QUESTS.quest end -- For testing purposes
+    self.questsByLevel = {
+        QUESTS_A.quest,
+        QUESTS_B.quest,
+        QUESTS_C.quest,
+        QUESTS_D.quest,
+        QUESTS_E.quest,
+        QUESTS_F.quest,
+        QUESTS_G.quest,
+        QUESTS_H.quest,
+        QUESTS_I.quest,
+        QUESTS_J.quest,
+        QUESTS_K.quest,
+        QUESTS_L.quest,
+        QUESTS_M.quest,
+        QUESTS_N.quest,
+        QUESTS_O.quest,
+        QUESTS_P.quest,
+        QUESTS_Q.quest,
+        QUESTS_R.quest,
+        QUESTS_S.quest,
+        QUESTS_T.quest,
+        QUESTS_U.quest,
+        QUESTS_V.quest,
+        QUESTS_W.quest,
+        QUESTS_X.quest,
+        QUESTS_Y.quest,
+        QUESTS_Z.quest,
+        QUESTS_OTHER.quest
+    }
 end
 
 function QuestManager:IsNewQuest(chatMessage)
