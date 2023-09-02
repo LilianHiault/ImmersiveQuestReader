@@ -101,12 +101,16 @@ def divide_xml_by_quest_name_first_letter(root):
         if letter < 'A' or letter > 'Z':
             # Regroup quests starting with numbers or non ASCII letters in a table
             letter = "OTHER"
-        if letter in quests_by_first_letter:
-            # Insert the new quest in the dictionary
-            quests_by_first_letter[letter].append(quest)
-        else:
-            # Create a list of quests with the first quest if it doesn't exist
-            quests_by_first_letter[letter] = [quest]
+        # if letter == 'A' or letter == 'B': # TODO : Remove this line, just for testing
+        quests_by_first_letter[letter].append(quest)
+
+        # if letter in quests_by_first_letter:
+        #     # Insert the new quest in the dictionary
+        #     quests_by_first_letter[letter].append(quest)
+        # else:
+        #     # Create a list of quests with the first quest if it doesn't exist
+        #     quests_by_first_letter[letter] = [quest]
+        #     print(f"⚠ Quest name starting with an unknown letter: '{name}'")
 
     divided_xml_trees = {}
     for letter, quests in quests_by_first_letter.items():
@@ -165,7 +169,14 @@ def main():
 
     # Write Lua tables to file
     with open(f'ImmersiveQuestReader/QuestDatabase.lua', 'w', encoding="utf-8") as file:
+        lua_comment = "-- This file contains all the quests in the game, divided by the first letter of their name.\n-- It is necessary to divide the quests into multiple files because LOTRO has a maximum size for Lua tables.\n"
+        file.write(lua_comment)
+
         file.write(lua_tables)
+
+        # Create a table containing all the quest tables
+        lua_database_list = f"QUEST_DATABASE = {{ {', '.join([f'QUESTS_{letter}.quest' for letter in divided_xml_trees.keys()])} }} \n\n"
+        file.write(lua_database_list)
     print(f"✅ Wrote the Lua table to the 'QuestDatabase.lua' file in {(time.time() - start):.2f} seconds.")
         
     # lua_table = xml_to_dict(xml_tree.getroot())
