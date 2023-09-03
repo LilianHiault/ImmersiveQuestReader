@@ -6,9 +6,9 @@ import "EsyIQR.ImmersiveQuestReader.QuestDatabase"
 QuestManager = class();
 
 function QuestManager:Constructor()
-    self.DEBUG = true;
+    self.DEBUG = false;
     
-    self.questsByLevel = QUEST_DATABASE
+    self.quests = QUEST_DATABASE
 end
 
 function QuestManager:IsNewQuest(chatMessage)
@@ -39,7 +39,7 @@ end
 -- Returns the quest text for a given quest name
 function QuestManager:GetQuestFromName(questName)
     -- local firstCharacter = string.sub(questName, 1, 1);
-    for _, database in pairs(self.questsByLevel) do
+    for _, database in pairs(self.quests) do
         for _, quest in pairs(database) do
             if quest.name == questName then
                 if self.DEBUG then Turbine.Shell.WriteLine("IQR.QuestManager> Quest found: '" .. quest.name .. "'") end
@@ -54,13 +54,14 @@ end
 -- @param quest: a quest table
 -- @param state: "new" or "completed"
 -- @param questText: the quest text
-function QuestManager:AddQuestStateText(quest, state, questText)
+function QuestManager:AddQuestStateText(quest, state)
     if state == "new" or state == "completed" then
         quest._state = state
     else
         quest._state = nil
     end
-
+    
+    local questText = self:GetQuestTextFromState(quest, state)
     if questText then
         quest._text = questText;
     end
