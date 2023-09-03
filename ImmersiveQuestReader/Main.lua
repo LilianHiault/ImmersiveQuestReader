@@ -12,7 +12,7 @@ QuestManager = QuestManager()
 
 -- Callback when a message is received
 Turbine.Chat.Received = function (sender, args)
-    if args.ChatType == Turbine.ChatType.Quest then
+    if (args.ChatType == Turbine.ChatType.Quest) or (args.ChatType == Turbine.ChatType.Standard) then
 
         -- New quest
         if QuestManager:IsNewQuest(args.Message) then
@@ -25,38 +25,21 @@ Turbine.Chat.Received = function (sender, args)
 
         -- Completed quest
         elseif QuestManager:IsCompletedQuest(args.Message) then
-            if DEBUG_GLOBAL then Turbine.Shell.WriteLine("IQR> Completed " .. QuestManager:GetNameFromChatMessageCompletedQuest(args.Message)) end
+            local questName = QuestManager:GetNameFromChatMessageCompletedQuest(args.Message)
+            if DEBUG_GLOBAL then Turbine.Shell.WriteLine("IQR> Completed '" .. questName .. "'") end
+            local quest = QuestManager:GetQuestFromName(questName)
+            if quest ~= nil then
+                quest = QuestManager:AddQuestStateText(quest, "completed");
+                QuestWindow:EnqueueQuest(quest);
+                if DEBUG_GLOBAL then Turbine.Shell.WriteLine("IQR> Enqueued " .. quest.name) end
+            else
+                if DEBUG_GLOBAL then Turbine.Shell.WriteLine("IQR> Quest not found: " .. questName) end
+            end
         end
 
     end
 end
 
 
-
--- local quest
--- quest  = QuestManager:GetQuestFromName("Fate of the Black Rider")
--- if quest ~= nil then
---     local questStateText = QuestManager:GetQuestTextFromState(quest, "new")
---     quest = QuestManager:AddQuestStateText(quest, "new", questStateText)
---     QuestWindow:EnqueueQuest(quest)
--- else
---     Turbine.Shell.WriteLine("IQR> New quest not found")
--- end
-
--- quest  = QuestManager:GetQuestTextFromName("Untangled Webs")
--- if quest ~= nil then
---     QuestManager:AddQuestState(quest, "new")
---     QuestWindow:EnqueueQuest(quest)
--- else
---     Turbine.Shell.WriteLine("IQR> New quest not found")
--- end
-
-
--- quest  = QuestManager:GetQuestFromName("Untangled Webs")
--- if quest ~= nil then
---     local questStateText = QuestManager:GetQuestTextFromState(quest, "completed")
---     quest = QuestManager:AddQuestStateText(quest, "completed", questStateText);
---     QuestWindow:EnqueueQuest(quest);
--- else
---     Turbine.Shell.WriteLine("IQR> Completed quest not found")
--- end
+-- Turbine.Shell.WriteLine("New Quest: The Keeper Garthamendir")
+-- Turbine.Shell.WriteLine("Completed:\nCanvas of Defiance")
